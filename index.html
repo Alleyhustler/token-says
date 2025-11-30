@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Says | Command Sequence</title>
+    
+    <!-- Fonts: Military/Industrial -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Jura:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* 2025 Grade Palette */
+            --bg-dark: #0a0b0c;
+            --bg-panel: rgba(20, 24, 28, 0.9);
+            --accent-gold: #cfaa68; 
+            --accent-alert: #8b3a3a; 
+            --accent-safe: #4a6b4a; 
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --border-style: 1px solid rgba(255, 255, 255, 0.1);
+            --font-head: 'Black Ops One', system-ui, cursive;
+            --font-body: 'Jura', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: url('background.png'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.95));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .header-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .social-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            border: var(--border-style);
+            padding: 0.8rem 1.5rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .social-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border-color: var(--accent-gold);
+        }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 2rem;
+        }
+
+        /* --- Hero Text Section --- */
+        .hero-text {
+            padding-right: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: var(--font-head);
+            font-size: clamp(3rem, 6vw, 6rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            line-height: 1.6;
+            border-left: 3px solid var(--accent-gold);
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Secondary Logo (Under Tagline) */
+        .secondary-logo {
+            display: block;
+            max-width: 200px; /* Adjust size as needed */
+            height: auto;
+            opacity: 0.8;
+            margin-left: 1.5rem; /* Align with tagline text */
+        }
+
+        /* --- Game Interface --- */
+        .game-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .device-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 2px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        /* Industrial decorative corners */
+        .device-panel::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 3px; background: var(--accent-gold); opacity: 0.5;
+        }
+
+        .screen-readout {
+            background: #050505;
+            border: 1px solid #222;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        /* Scanline effect */
+        .screen-readout::after {
+            content: " ";
+            position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        #status-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+            letter-spacing: 2px;
+        }
+
+        #main-display {
+            font-family: var(--font-body);
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--text-main);
+            z-index: 2;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .game-btn {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            padding: 1.8rem 1rem;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: all 0.1s ease;
+            position: relative;
+        }
+
+        .game-btn:hover {
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .game-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Active State (When Lit) */
+        .game-btn.lit {
+            background-color: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-gold);
+            border-color: var(--accent-gold);
+            transform: scale(0.98);
+            font-weight: 800;
+        }
+
+        /* Start Button */
+        #start-btn {
+            grid-column: span 2;
+            background: var(--accent-gold);
+            color: #000;
+            font-weight: 800;
+            letter-spacing: 2px;
+            border: none;
+            padding: 1.2rem;
+            margin-top: 10px;
+            cursor: pointer;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        
+        #start-btn:hover { background: #dcc08a; }
+        #start-btn.hidden { display: none; }
+
+        .score-bar {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding-top: 6rem;
+                overflow-y: auto;
+                padding-bottom: 2rem;
+            }
+            .hero-text {
+                padding-right: 0;
+                text-align: center;
+                align-items: center;
+            }
+            .tagline {
+                border-left: none;
+                border-top: 3px solid var(--accent-gold);
+                padding-top: 1rem;
+                margin: 0 auto 1.5rem auto;
+            }
+            .secondary-logo { margin-left: 0; }
+            header { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Top Left Logo -->
+        <img src="Emigrate__1_-removebg-preview.png" alt="Token Says" class="header-logo">
+        
+        <a href="https://twitter.com/yourprofile" target="_blank" class="social-btn">Transmission (X)</a>
+    </header>
+
+    <main>
+        <!-- Left: Text & Atmosphere -->
+        <section class="hero-text">
+            <h1>Token Says</h1>
+            <p class="tagline">
+                The trenches are silent, but orders are absolute. 
+                Memorize the command chain. One wrong move, and the line breaks.
+                <br><br>
+                <strong>Observe. Memorize. Survive.</strong>
+            </p>
+            
+            <!-- Secondary Logo (Under Tagline) -->
+            <img src="s.png" alt="Token Says Emblem" class="secondary-logo">
+        </section>
+
+        <!-- Right: The Game -->
+        <section class="game-wrapper">
+            <div class="device-panel">
+                <div class="screen-readout">
+                    <div id="status-text">SYSTEM STANDBY</div>
+                    <div id="main-display">AWAITING INPUT</div>
+                </div>
+
+                <div class="control-grid" id="game-controls">
+                    <button class="game-btn" id="btn-0">Radio HQ</button>
+                    <button class="game-btn" id="btn-1">Hold Pos</button>
+                    <button class="game-btn" id="btn-2">Gas Mask</button>
+                    <button class="game-btn" id="btn-3">Flare</button>
+                    
+                    <button id="start-btn">Initiate Sequence</button>
+                </div>
+
+                <div class="score-bar">
+                    <span id="level-indicator">SEQUENCE: 0</span>
+                    <span>SIGNAL: STABLE</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- Game Variables ---
+        const buttons = [
+            document.getElementById('btn-0'),
+            document.getElementById('btn-1'),
+            document.getElementById('btn-2'),
+            document.getElementById('btn-3')
+        ];
+        
+        const startBtn = document.getElementById('start-btn');
+        const mainDisplay = document.getElementById('main-display');
+        const statusText = document.getElementById('status-text');
+        const levelIndicator = document.getElementById('level-indicator');
+
+        let sequence = [];
+        let playerSequence = [];
+        let level = 0;
+        let isPlaying = false;
+        let isComputerTurn = false;
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startGame);
+
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => handlePlayerInput(index));
+        });
+
+        // --- Core Functions ---
+
+        function startGame() {
+            sequence = [];
+            playerSequence = [];
+            level = 1;
+            isPlaying = true;
+            
+            startBtn.classList.add('hidden');
+            updateUI("PREPARING...", "WATCH COMMANDS");
+            
+            // Short delay before first round
+            setTimeout(playRound, 1000);
+        }
+
+        function playRound() {
+            playerSequence = [];
+            isComputerTurn = true;
+            updateUI(`SEQUENCE ${level}`, "RECEIVING...");
+            
+            // Add a new step to the sequence
+            const randomStep = Math.floor(Math.random() * 4);
+            sequence.push(randomStep);
+
+            updateLevelDisplay();
+
+            // Play the sequence visually
+            let i = 0;
+            const interval = setInterval(() => {
+                flashButton(sequence[i]);
+                i++;
+                
+                if (i >= sequence.length) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        isComputerTurn = false;
+                        updateUI("YOUR TURN", "REPEAT SEQUENCE");
+                    }, 800);
+                }
+            }, 800); // Speed of sequence
+        }
+
+        function handlePlayerInput(btnIndex) {
+            // Ignore clicks if game hasn't started or it's computer's turn
+            if (!isPlaying || isComputerTurn) return;
+
+            // Flash the button instantly on click
+            flashButton(btnIndex, 150);
+            
+            // Add to player's input
+            playerSequence.push(btnIndex);
+
+            // Check correctness
+            const currentStep = playerSequence.length - 1;
+            
+            if (playerSequence[currentStep] !== sequence[currentStep]) {
+                gameOver();
+                return;
+            }
+
+            // Check if round is complete
+            if (playerSequence.length === sequence.length) {
+                level++;
+                isComputerTurn = true; // Block input immediately
+                setTimeout(playRound, 1000);
+            }
+        }
+
+        function flashButton(index, duration = 400) {
+            const btn = buttons[index];
+            btn.classList.add('lit');
+            // Optional: Play sound here
+            
+            setTimeout(() => {
+                btn.classList.remove('lit');
+            }, duration);
+        }
+
+        function gameOver() {
+            isPlaying = false;
+            mainDisplay.style.color = "var(--accent-alert)";
+            updateUI("GAME OVER", "CONNECTION LOST");
+            
+            // Flash screen red effect?
+            document.querySelector('.screen-readout').style.borderColor = "var(--accent-alert)";
+
+            setTimeout(() => {
+                startBtn.innerText = "RE-ESTABLISH LINK";
+                startBtn.classList.remove('hidden');
+                mainDisplay.style.color = "var(--text-main)";
+                document.querySelector('.screen-readout').style.borderColor = "#222";
+            }, 2000);
+        }
+
+        // --- Helpers ---
+        function updateUI(main, status) {
+            mainDisplay.innerText = main;
+            statusText.innerText = status;
+        }
+
+        function updateLevelDisplay() {
+            levelIndicator.innerText = `SEQUENCE LEN: ${sequence.length}`;
+        }
+    </script>
+</body>
+</html>
